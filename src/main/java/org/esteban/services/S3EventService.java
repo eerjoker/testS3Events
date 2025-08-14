@@ -11,7 +11,7 @@ import org.esteban.repositories.S3EventRepository;
 @Service
 public class S3EventService {
     @Value("${aws.sqs.s3events.url}")
-    private String awsSqsS3eventsUrl;
+    private String sqsS3eventsUrl;
 
     private final S3EventRepository repository;
     private final SqsMessageSenderService sqsMessageSenderService;
@@ -35,7 +35,7 @@ public class S3EventService {
     }
 
     private void sendSqsMessage(S3EventModel entity) {
-        sqsMessageSenderService.sendMessage(awsSqsS3eventsUrl, S3EventMapper.toS3EventMessageJson(entity))
+        sqsMessageSenderService.sendMessage(sqsS3eventsUrl, S3EventMapper.toS3EventMessageJson(entity))
                 .onErrorResume(ex -> {
                     System.out.println("Error sending event message to SQS: " + ex.getMessage()); // it could be logged here
                     return Mono.empty();
